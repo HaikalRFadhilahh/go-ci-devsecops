@@ -36,7 +36,7 @@ docker pull ghcr.io/haikalrfadhilahh/govulncheck:1.1.4
 If you are reading this, make sure you have downloaded the docker image according to the guide above or earlier so that you can run SCA / `govulncheck` without problems.
 
 **Basic Concept:**
-In testing in a docker container, all your source code files will be binded using docker volume / -v arg so that your source code can be tested by `govulncheck` in the container. After testing the file results can be exported via `tee` in the `/app/result` folder and you can automatically access the test results at `${path_folder_project_anda}/result/nama_file_result.ext`, then after that you can upload via artifact or Vulnerability Management Applications such as DefectDojo.
+In testing in a docker container, all your source code files will be binded using docker volume / -v arg so that your source code can be tested by `govulncheck` in the container. After testing the file results can be exported via `tee` in the `/app/result` folder and you can automatically access the test results at `${path_folder_your_project_}/result/name_file_result.ext`, then after that you can upload via artifact or Vulnerability Management Applications such as DefectDojo.
 
 Here's the basic pattern for running the govulncheck docker container:
 
