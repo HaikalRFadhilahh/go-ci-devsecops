@@ -9,7 +9,7 @@ ENV CGO_ENABLED=0 \
 RUN go install golang.org/x/vuln/cmd/govulncheck@v1.1.4
 
 # Alpine Linux Runner
-FROM alpine:3.21.3 AS library-runner
+FROM golang:1.24.3-alpine3.21 AS library-runner
 
 # Setting Working Directory (Default PWD / Print Working Directory)
 WORKDIR /app
