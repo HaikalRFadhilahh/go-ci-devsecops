@@ -40,6 +40,173 @@ Based on the picture above, there are 2 CI / Continous Integration processes, na
 
 ## Continous Intergation Implementation on Github Actions
 
+This section focuses more on how to implement a DevSecOps CI according to the DevSecOps Gospel rules. Although there are many steps in the CI Github Actions File below, we mostly talk about SCA, SAST, DAST according to the original purpose of this documentation. For reference you can see an example of Continous Integration DevSecOps with Github Actions below:
+
+> It should be noted that in the Continous Integration File there is Deployment and Testing, but here it is only a reference and can be used according to the conditions of your project needs.
+
+```yaml
+# Configure Name of Continous Intergation File
+name: Continous Integration DevSecOps from Development to Staging
+
+# Condition
+on:
+  # Running when Pull Request to Staging Branches
+  pull_request:
+    branches:
+      - staging
+      - master
+  # And Running Pipeline when Pushed to Staging Branches
+  push:
+    branches:
+      - staging
+      - master
+
+# List Of Jobs Pipeline / Contionous Integration
+jobs:
+  # Jobs For Unit Test
+  unit-test:
+    # Running Jobs with Ubuntu OS
+    runs-on: ubuntu-latest
+
+    # Run Jobs when Pull Request to Staging
+    if: github.event_name == 'pull_request'
+
+    # List Steps of Jobs
+    steps:
+      - name: Checkout Code / Copy Source Code to Jobs Runner
+        uses: actions/checkout@v4
+
+      - name: Unit Testing Script / Command
+        run: echo "Run Your Unit Test Script Here"
+
+  # Jobs For Integration Test
+  integration-test:
+    # Running Jobs with Ubuntu OS
+    runs-on: ubuntu-latest
+
+    # Run Jobs when Pull Request to Staging
+    if: github.event_name == 'pull_request'
+
+    # List Steps of Jobs
+    steps:
+      - name: Checkout Code / Copy Source Code to Jobs Runner
+        uses: actions/checkout@v4
+
+      - name: Integration Testing Script / Command
+        run: echo "Run Your Integration Test Script Here"
+
+  # Jobs For Software Composition Analysis
+  sca:
+    # Running Jobs with Ubuntu OS
+    runs-on: ubuntu-latest
+
+    # Run Jobs when Pull Request to Staging
+    if: github.event_name == 'pull_request'
+
+    # List Steps of Jobs
+    steps:
+      - name: Checkout Code / Copy Source Code to Jobs Runner
+        uses: actions/checkout@v4
+
+      - name: Pull Docker Images govulncheck for SCA
+        run: docker pull ghcr.io/haikalrfadhilahh/govulncheck:1.1.4
+
+      - name: SCA Scan with govulncheck with docker
+        run: docker run --rm -v $(pwd):/app ghcr.io/haikalrfadhilahh/govulncheck:1.1.4 govulncheck -scan symbol -mode source -show color,traces,version -format text ./... | tee -a result-govulncheck.txt
+        continue-on-error: true
+
+      - name: Upload Result SCA Test with Github Actions Artifacts
+        uses: actions/upload-artifact@v4
+        continue-on-error: true
+        with:
+          name: govulncheck SCA Test Result
+          path: result-govulncheck.txt
+
+  # Jobs For SAST (Static Analysis Security Testing)
+  sast:
+    # Running Jobs with Ubuntu OS
+    runs-on: ubuntu-latest
+
+    # Run Jobs when Pull Request to Staging
+    if: github.event_name == 'pull_request'
+
+    # List Steps of Jobs
+    steps:
+      - name: Checkout Code / Copy Source Code to Jobs Runner
+        uses: actions/checkout@v4
+
+      - name: Pull Docker Images govulncheck for SAST
+        run: docker pull ghcr.io/haikalrfadhilahh/gosec:2.22.4
+
+      - name: SAST Security Testing with gosec with docker
+        run: docker run --rm -v $(pwd):/app ghcr.io/haikalrfadhilahh/gosec:2.22.4 gosec -stdout -sort -severity medium -nosec -fmt text -color -confidence medium -out /app/result/result-gosec.txt ./...
+        continue-on-error: true
+
+      - name: Upload Result SAST Test with Github Actions Artifacts
+        uses: actions/upload-artifact@v4
+        continue-on-error: true
+        with:
+          name: gosec SAST Test Result
+          path: result/result-gosec.txt
+
+  # Jobs for DAST (Dynamic Analysis Security Testing) using Zaproxy Baseline
+  dast:
+    # Running DAST Jobs with ubuntu os
+    runs-on: ubuntu-latest
+
+    # Setting Environtment
+    environment: staging
+
+    # Running Jobs when
+    if: ${{ github.event_name == 'pull_request' && github.base_ref == 'master' }}
+
+    # List of Steps
+    steps:
+      - name: Pull Docker Image Owasp Baseline
+        run: docker pull zaproxy/zap-stable:2.16.1
+
+      - name: DAST Scan with Owasp Baseline
+        run: docker run -u root --privileged -v $(pwd):/zap/wrk:rw --rm zaproxy/zap-stable:2.16.1 zap-baseline.py -t ${{ secrets.URL_APP_STAGING }} -w result-zaproxy-baseline.md
+        continue-on-error: true
+
+      - name: Upload Result DAST Test with Github Actions Artifacts
+        uses: actions/upload-artifact@v4
+        continue-on-error: true
+        with:
+          name: Zaproxy Baseline DAST Test Result
+          path: result-zaproxy-baseline.md
+
+  # Jobs for Deployment in Staging Stage
+  deploy-staging:
+    # Running Jobs Deployment Staging in Ubuntu OS
+    runs-on: ubuntu-latest
+    # Running Jobs when Success Merged on Staging
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/staging' }}
+
+    # List of Steps
+    steps:
+      - name: Build Docker Image Staging Artifacts
+        run: echo "Run Command / Script to Build you App Docker Artifacts"
+
+      - name: Push Docker Image Staging To Registry
+        run: echo "Run Command / Script to Push / Upload your App Artifact / Image to Registry"
+
+  # Jobs for Deployment in Production Stage
+  deploy-production:
+    # Running Jobs Deployment Production in Ubuntu OS
+    runs-on: ubuntu-latest
+    # Running Jobs when Success Merged on Staging
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+
+    # List of Steps
+    steps:
+      - name: Build Docker Image Production Artifacts
+        run: echo "Run Command / Script to Build you App Docker Artifacts"
+
+      - name: Push Docker Image Production To Registry
+        run: echo "Run Command / Script to Push / Upload your App Artifact / Image to Registry"
+```
+
 ## Contributors
 
 You can contribute to this project via Pull Request to this Repository, or you can report bugs, vulnerabilities, misinformation via the issues feature on github. 🐳
