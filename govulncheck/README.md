@@ -36,7 +36,7 @@ docker pull ghcr.io/haikalrfadhilahh/govulncheck:1.1.4
 If you are reading this, make sure you have downloaded the docker image according to the guide above or earlier so that you can run SCA / `govulncheck` without problems.
 
 **Basic Concept:**
-In testing in a docker container, all your source code files will be binded using docker volume / -v arg so that your source code can be tested by `govulncheck` in the container. After testing the file results can be exported via `tee` in the `/app/result` folder and you can automatically access the test results at `${path_folder_your_project_}/result/name_file_result.ext`, then after that you can upload via artifact or Vulnerability Management Applications such as DefectDojo.
+In testing in a docker container, all your source code files will be binded using docker volume / -v arg so that your source code can be tested by `govulncheck` in the container. After testing the file results can be exported via `tee` in the `/app` folder and you can automatically access the test results at `${path_folder_your_project_}/name_file_result.ext`, then after that you can upload via artifact or Vulnerability Management Applications such as DefectDojo.
 
 Here's the basic pattern for running the govulncheck docker container:
 
@@ -49,7 +49,7 @@ cd your_project_path
 Run `govulncheck` via docker run command (example):
 
 ```bash
-docker run --rm -v $(pwd):/app ghcr.io/haikalrfadhilahh/govulncheck:1.1.4 govulncheck -scan symbol -mode source -show color,traces,version -format text ./... | tee -a result/result-govulncheck.txt
+docker run --rm -v $(pwd):/app ghcr.io/haikalrfadhilahh/govulncheck:1.1.4 govulncheck -scan symbol -mode source -show color,traces,version -format text ./... | tee -a result-govulncheck.txt
 ```
 
 **Command Explanation:**
@@ -61,7 +61,7 @@ In order to further understand the above command I will provide an explanation o
 
 - `--rm` : The `--rm` param of `docker run` is an additional command to not save the docker container history. So that after the test runs, the docker container will be deleted automatically (This also happens when success / failure, whatever the exit condition the container will always be deleted)
 
-- `-v $(pwd):/app` : Param `-v $(pwd):/app` serves to bind our source code to the docker container `/app` so that the source code can be tested in SCA through the docker container without having to create a volume explicitly. This also binds the test results that go into the `results/name_file_export_testing.extension` folder to our local.
+- `-v $(pwd):/app` : Param `-v $(pwd):/app` serves to bind our source code to the docker container `/app` so that the source code can be tested in SCA through the docker container without having to create a volume explicitly. This also binds the test results that go into the `${local_project_path}/name_file_export_testing.extension` folder to our local.
 
 - `ghcr.io/haikalrfadhilahh/govulncheck:1.1.4` : The last and mandatory argument is to specify which image to use. This can be customized according to your needs either changing the image source or the version of the govulncheck image.
 
@@ -79,7 +79,7 @@ In order to further understand the above command I will provide an explanation o
 
 - `./...` : Specifies the directory to be scanned, including all subdirectories recursively.
 
-- `tee -a result/result-govulncheck.txt` : The `tee` command serves to save the output results from STDOUT to the file path, and there is a param `-a` which means append to add a new vulnerability to the file if the file did not exist before.
+- `tee -a result-govulncheck.txt` : The `tee` command serves to save the output results from STDOUT to the file path, and there is a param `-a` which means append to add a new vulnerability to the file if the file did not exist before.
 
 **Example of output results from SCA testing with govulncheck :**
 
