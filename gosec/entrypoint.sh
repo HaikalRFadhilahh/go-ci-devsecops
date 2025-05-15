@@ -9,8 +9,8 @@ if [ -n "$1" ];then
     # Creating Folder result and bind to folder
     mkdir -p /app/result
     # Exec gosec command from user
-    eval "$@"
+    $@
 else
     # If User not sending the custom command return with gosec --help CLI
-    eval gosec --help
+    gosec --help
 fi

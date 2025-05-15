@@ -8,11 +8,9 @@ set -e
 if [ -n "$1" ]; then
     # Create Folder 
     mkdir -p /app/result
-    # Sleep First for Waiting The Folder Ready
-    sleep 5
-    # Exec Command from param
-    eval "$@"
+    # Execution Command From User
+    $@
 else
     # Show Help govulncheck if user not send the command param
-    eval govulncheck --help
+    govulncheck --help
 fi
