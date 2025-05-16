@@ -42,7 +42,7 @@ Based on the picture above, there are 2 CI / Continous Integration processes, na
 
 This section focuses more on how to implement a DevSecOps CI according to the DevSecOps Gospel rules. Although there are many steps in the CI Github Actions File below, we mostly talk about SCA, SAST, DAST according to the original purpose of this documentation. For reference you can see an example of Continous Integration DevSecOps with Github Actions below:
 
-> It should be noted that in the Continous Integration File there is Deployment and Testing, but here it is only a reference and can be used according to the conditions of your project needs.
+> ! It should be noted that in the Continous Integration File there is Deployment and Testing, but here it is only a reference and can be used according to the conditions of your project needs.
 
 ```yaml
 # Configure Name of Continous Intergation File
@@ -206,6 +206,18 @@ jobs:
       - name: Push Docker Image Production To Registry
         run: echo "Run Command / Script to Push / Upload your App Artifact / Image to Registry"
 ```
+
+The code above is a file that contains code for Continous Integration in all branches. By using `if` in jobs we can set when and whether a job is run under certain conditions so that it can summarize jobs neatly.
+
+> Additional Information: There are many ways to declare CI Pipeline in Github Actions. If you follow the tutorial above then I only declare ci in one file. But if you don't like that concept you can change the code and break it into several part files.
+
+> Warning: If you have variables / values that are confidential you can store in the repository in the form of secrets / vars. You can read the tutorial at this [link](https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions)
+
+## References
+
+- SCA (Software Compsition Analysis) with govulncheck : [govulncheck docker image documentation](https://github.com/HaikalRFadhilahh/go-ci-devsecops/tree/master/govulncheck)
+- SAST (Static Analysis Security Testing) with gosec: [gosec docker image documentation](https://github.com/HaikalRFadhilahh/go-ci-devsecops/tree/master/gosec)
+- DAST (Dynamic Analysis Security Testing) with zaproxy baseline : [zaproxy baseline docker documentation](https://hub.docker.com/r/zaproxy/zap-stable)
 
 ## Contributors
 
