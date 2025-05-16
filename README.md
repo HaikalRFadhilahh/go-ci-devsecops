@@ -1,12 +1,12 @@
-# DevSecOps Tools Continous Integration with Github Actions and Docker Container for Go-Lang
+# DevSecOps Tools Continuous Integration with Github Actions and Docker Container for Go-Lang
 
-This repository is a simple project or guide for the implementation of Security in DevSecOps (Development - Security - Operation) practices and emphasizes more on the practical implementation of CI (Continous Integration) Security such as SCA, SAST, DAST with tools / libraries that have been provided in each programming language used.
+This repository is a simple project or guide for the implementation of Security in DevSecOps (Development - Security - Operation) practices and emphasizes more on the practical implementation of CI (Continuous Integration) Security such as SCA, SAST, DAST with tools / libraries that have been provided in each programming language used.
 
-> ! Additional Information : This repository only implements Continous Integration without Stage Test, and CI is only implemented in Go-Lang projects.
+> ! Additional Information : This repository only implements Continuous Integration without Stage Test, and CI is only implemented in Go-Lang projects.
 
-The following is an explanation of each stage in CI (Continous Integration) in DevSecOps practice:
+The following is an explanation of each stage in CI (Continuous Integration) in DevSecOps practice:
 
-- **Unit Test (Test Stage)** : In CI (Continous Integration) Unit Test is a source code testing stage that tests each function available in the code, whether the function runs according to the expected results expected by QA with custom parameters.
+- **Unit Test (Test Stage)** : In CI (Continuous Integration) Unit Test is a source code testing stage that tests each function available in the code, whether the function runs according to the expected results expected by QA with custom parameters.
 
 - **Integration Test (Test Stage)** : Integration Test is a fairly important testing stage because a test is based on a case study such as Login which requires several other functions that are bound together so this process is quite slow, but with this test QA can ensure that whether an application flow can run well or not.
 
@@ -18,15 +18,15 @@ The following is an explanation of each stage in CI (Continous Integration) in D
 
 - **Build Source / Building Artifacts** : Building Artifacts is a stage where the application is built in a form that is ready to be deployed on CD (Continuous Deployment / Delivery). Artifacts Build / Artifacts Application can be in the form of binary code (Usually C++, C, Go App) or Docker Image that has been uploaded to a container registry such as (Github Container Registry, Docker Hub, Private Container Registry).
 
-## Basic Understanding and Flow of Continous Integration Implementation on Github Actions
+## Basic Understanding and Flow of Continuous Integration Implementation on Github Actions
 
-In this section I will explain how to implement Continous Integration in Github Actions. Like the use of CI stages and branch structures, in this project or guide I use 3 branches namely `main / master` which is the main branch or source code for production, `staging` which functions for testing and the application that runs here has a different url from prod for DAST testing and the last is `development` is a branch for developers to save code changes and will be shifted to `staging` if they want to publish but are being tested by QA.
+In this section I will explain how to implement Continuous Integration in Github Actions. Like the use of CI stages and branch structures, in this project or guide I use 3 branches namely `main / master` which is the main branch or source code for production, `staging` which functions for testing and the application that runs here has a different url from prod for DAST testing and the last is `development` is a branch for developers to save code changes and will be shifted to `staging` if they want to publish but are being tested by QA.
 
-To clarify the CI / Continous Integration process that is implemented I have created a picture that can be understood. Here is the CI Process Image:
+To clarify the CI / Continuous Integration process that is implemented I have created a picture that can be understood. Here is the CI Process Image:
 
-![Continous Intergation Architecture Image](image.jpg)
+![Continuous Intergation Architecture Image](./assets/ci-architecture.png)
 
-Based on the picture above, there are 2 CI / Continous Integration processes, namely from dev to stag and stag to prod / master. Here's a further explanation of the 2 differences:
+Based on the picture above, there are 2 CI / Continuous Integration processes, namely from dev to stag and stag to prod / master. Here's a further explanation of the 2 differences:
 
 - **`development` -> `staging`** : In the CI process at the `development` -> `staging` stage there are several stages that are usually applied such as Project Testing (However, this time I did not exemplify the Testing stage in CI), checking the libraries that have just been installed into the project using the SCA technique and analyzing the new source code using SAST. Then besides that we also have to upload the Artifact / Deployment to the staging server / Trigger the External Tools CD.
 
@@ -38,15 +38,15 @@ Based on the picture above, there are 2 CI / Continous Integration processes, na
 
   <br>
 
-## Continous Intergation Implementation on Github Actions
+## Continuous Intergation Implementation on Github Actions
 
-This section focuses more on how to implement a DevSecOps CI according to the DevSecOps Gospel rules. Although there are many steps in the CI Github Actions File below, we mostly talk about SCA, SAST, DAST according to the original purpose of this documentation. For reference you can see an example of Continous Integration DevSecOps with Github Actions below:
+This section focuses more on how to implement a DevSecOps CI according to the DevSecOps Gospel rules. Although there are many steps in the CI Github Actions File below, we mostly talk about SCA, SAST, DAST according to the original purpose of this documentation. For reference you can see an example of Continuous Integration DevSecOps with Github Actions below:
 
-> ! It should be noted that in the Continous Integration File there is Deployment and Testing, but here it is only a reference and can be used according to the conditions of your project needs.
+> ! It should be noted that in the Continuous Integration File there is Deployment and Testing, but here it is only a reference and can be used according to the conditions of your project needs.
 
 ```yaml
-# Configure Name of Continous Intergation File
-name: Continous Integration DevSecOps from Development to Staging
+# Configure Name of Continuous Intergation File
+name: Continuous Integration DevSecOps from Development to Staging
 
 # Condition
 on:
@@ -207,7 +207,7 @@ jobs:
         run: echo "Run Command / Script to Push / Upload your App Artifact / Image to Registry"
 ```
 
-The code above is a file that contains code for Continous Integration in all branches. By using `if` in jobs we can set when and whether a job is run under certain conditions so that it can summarize jobs neatly.
+The code above is a file that contains code for Continuous Integration in all branches. By using `if` in jobs we can set when and whether a job is run under certain conditions so that it can summarize jobs neatly.
 
 > Additional Information: There are many ways to declare CI Pipeline in Github Actions. If you follow the tutorial above then I only declare ci in one file. But if you don't like that concept you can change the code and break it into several part files.
 

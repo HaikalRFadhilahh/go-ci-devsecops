@@ -1,6 +1,6 @@
 # Golang Vulnerability Check (govulncheck) Docker Image Configuration for SCA (Software Composition Analysis)
 
-SCA (Software Composition Analysis) is a technique that can be implemented in CI (Continous Integration) in the DevSecOps process. SCA is part of the Sec / Security stage for checking external dependencies used in the project, in this case we will use GoVulnCheck (Go Vulnerabilty and Checking) to record vulnerabilities in our application.
+SCA (Software Composition Analysis) is a technique that can be implemented in CI (Continuous Integration) in the DevSecOps process. SCA is part of the Sec / Security stage for checking external dependencies used in the project, in this case we will use GoVulnCheck (Go Vulnerabilty and Checking) to record vulnerabilities in our application.
 
 Govulncheck is an official package from golang to check the dependencies needed by the project. govulncheck can be installed directly with `go install` or using binary, but instead of installing I will utilize docker to check govulncheck without installation.
 
